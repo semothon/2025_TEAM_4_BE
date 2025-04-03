@@ -87,3 +87,5 @@ bootstrap().catch(err => {
     const defaultExitCode = 1;
     process.exit(defaultExitCode);
 });
+
+console.log("hello");
