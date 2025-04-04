@@ -29,7 +29,16 @@ model User {
   studentId   String
   createdAt   DateTime @default(now())
 
-  
   @@map("users")
 }
-  
+
+
+model Question{
+  id          Int    @id @default(autoincrement())
+  content     String
+  category    String
+  weight      Int
+
+  @@map("questions")
+}
+

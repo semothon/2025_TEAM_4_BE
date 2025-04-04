@@ -19,8 +19,8 @@ const API_DEFAULT_PREFIX = '/api/v1/';
  *
  * @todo Change the constants below following your API requirements
  */
-const SWAGGER_TITLE = 'Passenger API';
-const SWAGGER_DESCRIPTION = 'API used for passenger management';
+const SWAGGER_TITLE = 'User API';
+const SWAGGER_DESCRIPTION = 'API used for user management';
 const SWAGGER_PREFIX = '/docs';
 
 /**
@@ -87,5 +87,3 @@ bootstrap().catch(err => {
     const defaultExitCode = 1;
     process.exit(defaultExitCode);
 });
-
-console.log("hello");
