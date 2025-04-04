@@ -1,4 +1,5 @@
 import { IsBoolean, IsDateString, IsInt, IsNumber, IsString, Min, Max } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
 
 export class CreateUserPatternDto {
   @IsDateString()
@@ -39,3 +40,6 @@ export class CreateUserPatternDto {
   @IsInt()
   userId: number;
 }
+
+export class UpdateUserPatternDto extends PartialType(CreateUserPatternDto) {}
+
