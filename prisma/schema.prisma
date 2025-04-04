@@ -45,8 +45,8 @@ model UserPattern {
   cleaningCycle   Int      // 일 단위
   noiseSensitivity Int     // 1~5 척도
   allowVisitors   Boolean
-  studyTime       Int      // 분 단위
-  preferredTemp   Float    // 섭씨
+  studyHours       Int      // 분 단위
+  preferredTemperature   Float    // 섭씨
   personality     String   // MBTI
 
   createdAt       DateTime @default(now())
