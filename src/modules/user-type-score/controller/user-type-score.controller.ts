@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, Post, Put } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SubmitUserTypeScoreDto, TestUserTypeScoreDto } from '../model/user-type-score.dto';
 import { UserTypeScoreService } from '../service/user-type-score.service';
 
+@ApiTags('Use Type Score')
 @Controller('user-type-score')
 export class UserTypeScoreController {
     constructor(private readonly userTypeScoreService: UserTypeScoreService) {}
@@ -13,7 +14,7 @@ export class UserTypeScoreController {
     return this.userTypeScoreService.createScoreFromTest(dto);
   }
   
-  @Post('submit')
+  @Put('submit')
   @ApiOperation({ summary: '유형 검사 제출', description: '사용자의 검사 결과를 저장하거나 업데이트합니다.' })
   submitOrUpdate(@Body() dto: SubmitUserTypeScoreDto) {
     return this.userTypeScoreService.submitOrUpdateScore(dto);

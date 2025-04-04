@@ -63,7 +63,7 @@ model UserTypeScore {
   
   //각 필드값의 범위는 0 ~ 15
   cleanliness   Int     // 청결
-  noise         Int     // 소음:
+  noise         Int     // 소음
   sharedItems   Int     // 공용물품
   communication Int     // 소통
   sleepPattern  Int     // 수면 패턴
