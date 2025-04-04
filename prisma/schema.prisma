@@ -29,16 +29,28 @@ model User {
   studentId   String
   createdAt   DateTime @default(now())
 
+  pattern     UserPattern?
   @@map("users")
 }
 
+model UserPattern {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-model Question{
-  id          Int    @id @default(autoincrement())
-  content     String
-  category    String
-  weight      Int
+  sleepTime       String   // 'HH:mm' 형식
+  wakeTime        String   
+  isSmoker        Boolean
+  isDrinker       Boolean
+  cleaningCycle   Int      // 일 단위
+  noiseSensitivity Int     // 1~5 척도
+  allowVisitors   Boolean
+  studyTime       Int      // 분 단위
+  preferredTemp   Float    // 섭씨
+  personality     String   // MBTI
 
-  @@map("questions")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("user_patterns")
 }
-
