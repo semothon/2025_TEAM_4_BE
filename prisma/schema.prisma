@@ -30,6 +30,7 @@ model User {
   createdAt   DateTime @default(now())
 
   pattern     UserPattern?
+  userTypeScore UserTypeScore?
   @@map("users")
 }
 
@@ -53,4 +54,25 @@ model UserPattern {
   updatedAt       DateTime @updatedAt
 
   @@map("user_patterns")
+}
+
+model UserTypeScore {
+  id            Int     @id @default(autoincrement())
+  userId        Int     @unique
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  //각 필드값의 범위는 0 ~ 15
+  cleanliness   Int     // 청결
+  noise         Int     // 소음:
+  sharedItems   Int     // 공용물품
+  communication Int     // 소통
+  sleepPattern  Int     // 수면 패턴
+  sensitivity   Int     // 민감도
+  patience      Int     // 인내심
+  attention     Int     // 주의력
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("user_type_scores")
 }
