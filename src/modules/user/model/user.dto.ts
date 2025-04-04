@@ -59,3 +59,26 @@ export class SignInDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class UpdateUserDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  birthdate: Date;
+
+  @ApiProperty()
+  gender: string;
+
+  @ApiProperty()
+  country: string;
+
+  @ApiProperty()
+  university: string;
+
+  @ApiProperty()
+  department: string;
+
+  @ApiProperty()
+  studentId: string;
+}
