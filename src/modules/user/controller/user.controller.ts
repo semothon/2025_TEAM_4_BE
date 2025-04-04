@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { SignUpDto, SignInDto } from '../model/user.dto';
@@ -20,4 +20,11 @@ export class UserController {
     //console.log("로그인 성공!");
     return this.userService.signIn(signInDto);
   }
+
+  @Get('/:email')
+  @ApiOperation({summary : '내 정보 확인', description: '사용자 정보 확인'})
+  async getUserByEmail(@Param('email') email: string){
+    return this.userService.getUserByEmail(email);
+  }
+
 }
