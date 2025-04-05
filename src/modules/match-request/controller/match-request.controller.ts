@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Patch, UseGuards } from '@nestjs/common';
 import { MatchRequestService } from '../service/match-request.service';
 import { CreateMatchRequestDto, RespondMatchRequestDto } from '../dto/match-request.dto';
 import { MatchRequest } from '@prisma/client';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccessGuard } from '../../common/security/access.guard';
 import { UserData } from '../../user/model/user.data';
 import { User } from '../../common/decorators/user.decorator';
@@ -16,6 +16,7 @@ export class MatchRequestController {
 
   @Post()
   @ApiOperation({ summary: '룸메이트 매칭 요청 생성' })
+  @ApiBearerAuth()
   @ApiBody({ type: CreateMatchRequestDto })
   @ApiResponse({status: 201, description: '매칭 요청이 성공적으로 생성됨',type: CreateMatchRequestDto,})
   @UseGuards(AccessGuard)
@@ -38,14 +39,10 @@ type: RespondMatchRequestDto,
 
   @Get('/pending')
   @ApiOperation({ summary: '사용자의 수신 대기 중인 매칭 요청 조회' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: '해당 유저에게 온 대기 중인 요청 리스트 반환', type: [RespondMatchRequestDto]})
   @UseGuards(AccessGuard)
-  @ApiResponse({
-    status: 200,
-    description: '해당 유저에게 온 대기 중인 요청 리스트 반환',
-    type: [RespondMatchRequestDto],
-  })
-  
-  public getPendingRequests(@User() user: UserData): Promise<MatchRequest[]> {
+  async getPendingRequests(@User() user: UserData): Promise<MatchRequest[]> {
     return this.matchRequestService.getPendingRequestsForUser(user.id);
   }
 }
