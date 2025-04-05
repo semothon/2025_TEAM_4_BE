@@ -1,45 +1,44 @@
-import { IsBoolean, IsDateString, IsInt, IsNumber, IsString, Min, Max } from 'class-validator';
 import { PartialType } from '@nestjs/swagger';
+import { IsBoolean, IsDateString, IsInt, IsNumber, IsString, Min, Max } from 'class-validator';
 
 export class CreateUserPatternDto {
   @IsDateString()
-  sleepTime: string;
+  public sleepTime: string;
 
   @IsDateString()
-  wakeTime: string;
+  public wakeTime: string;
 
   @IsBoolean()
-  isSmoker: boolean;
+  public isSmoker: boolean;
 
   @IsBoolean()
-  isDrinker: boolean;
+  public isDrinker: boolean;
 
   @IsInt()
   @Min(1)
-  cleaningCycle: number;
+  public cleaningCycle: number;
 
   @IsInt()
   @Min(1)
   @Max(5)
-  noiseSensitivity: number;
+  public noiseSensitivity: number;
 
   @IsBoolean()
-  allowVisitors: boolean;
+  public allowVisitors: boolean;
 
   @IsInt()
   @Min(0)
   @Max(24)
-  studyHours: number;
+  public studyHours: number;
 
   @IsNumber()
-  preferredTemperature: number;
+  public preferredTemperature: number;
 
   @IsString()
-  personality: string;
+  public personality: string;
 
   @IsInt()
-  userId: number;
+  public userId: number;
 }
 
 export class UpdateUserPatternDto extends PartialType(CreateUserPatternDto) {}
-

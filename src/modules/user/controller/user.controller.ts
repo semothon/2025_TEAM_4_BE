@@ -22,8 +22,12 @@ export class UserController {
     return user;
   }
 
+<<<<<<< HEAD
   @Post('/sign-up')
   @ApiResponse({ status: 201, description: '회원가입 성공', type: UserData })
+=======
+  @Post('/sign-up') 
+>>>>>>> 607d572773747e8bd310eddb13d7b64482360645
   @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
   public async signUp(@Body() signUpDto: SignUpDto): Promise<UserData> {
     return this.userService.signUp(signUpDto);
