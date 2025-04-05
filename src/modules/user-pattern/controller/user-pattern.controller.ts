@@ -56,8 +56,7 @@ schema: {
     });
   }
 
-  @Put()
-@UseGuards(AccessGuard)
+@Put()
 @ApiOperation({ summary: '사용자 패턴 정보 수정', description: '사용자의 패턴 정보를 수정합니다.' })
 @ApiResponse({ status: 200, description: '패턴 정보 수정 완료', type: UpdateUserPatternDto })
 @ApiBody({
@@ -81,6 +80,7 @@ schema: {
     },
   },
 })
+@UseGuards(AccessGuard)
 public async update(
   @User() user: UserData, // 인증된 유저 정보
   @Body() updateUserPatternDto: Omit<UpdateUserPatternDto, 'userId'>, // userId 제외
