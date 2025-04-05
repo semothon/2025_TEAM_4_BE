@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { UserPatternModule } from './user-pattern/user-pattern.module';
 import { UserTypeScoreModule } from './user-type-score/user-type-score.module';
 import { MatchRoomateModule } from './match-roommate/match-roomate.module';
+import { MatchRequestModule } from './match-request/match-request.modules';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { MatchRoomateModule } from './match-roommate/match-roomate.module';
         UserPatternModule,
         UserTypeScoreModule,
         MatchRoomateModule,
+        MatchRequestModule,
         AuthModule,
     ],
 })

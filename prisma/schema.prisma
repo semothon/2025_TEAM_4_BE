@@ -35,6 +35,9 @@ model User {
   roommateId     Int?             
   roommate       User?            @relation("RoommateRelation", fields: [roommateId], references: [id])
   roommates      User[]           @relation("RoommateRelation")
+
+  sentRequests      MatchRequest[] @relation("SentRequests")
+  receivedRequests  MatchRequest[] @relation("ReceivedRequests")
   @@map("users")
 }
 
@@ -76,4 +79,22 @@ model UserTypeScore {
   updatedAt     DateTime @updatedAt
 
   @@map("user_type_scores")
+}
+
+model MatchRequest {
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  status      MatchStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sender      User     @relation("SentRequests", fields: [senderId], references: [id])
+  receiver    User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
+}
+
+enum MatchStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
