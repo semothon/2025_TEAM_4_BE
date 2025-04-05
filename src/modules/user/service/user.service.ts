@@ -1,24 +1,33 @@
-import { Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import { PrismaService } from '../../common';
 import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
+import { AuthService } from '../../common/security/auth/auth.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  public constructor(private readonly prismaService: PrismaService, private readonly authService: AuthService) {}
 
-  async signUp(signUpDto: SignUpDto) {
+  public async signUp(signUpDto: SignUpDto) {
     return await this.prismaService.user.create({
       data: signUpDto,
     });
   }
 
-  async signIn(signInDto: SignInDto) {
-    return await this.prismaService.user.findUnique({
-      where: { email: signInDto.email },
+  public async signIn(signInDto: SignInDto) {
+    const user = await this.prismaService.user.findUnique({
+      where: { email: signInDto.email, password: signInDto.password },
+      select: {
+        id: true,
+      }
     });
+    console.log(user);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return this.authService.createAccessToken(user.id);
   }
 
-  async getUserByEmail(email: string){
+  public async getUserByEmail(email: string){
     const user = await this.prismaService.user.findUnique({where: {email}, });
 
     if (!user) throw new NotFoundException('사용자를 찾을 수 없습니다.');
@@ -27,7 +36,7 @@ export class UserService {
     return result;
   }
 
-  async updateUserByEmail(email: string, updateUserDto: UpdateUserDto){
+  public async updateUserByEmail(email: string, updateUserDto: UpdateUserDto){
     const user = await this.prismaService.user.findUnique({where : {email}});
 
     if (!user) throw new NotFoundException('사용자를 찾을 수 없습니다.');

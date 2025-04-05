@@ -1,3 +1,4 @@
+import { Module } from '@nestjs/common';
 import * as Joi from 'joi';
 
 import { Service } from '../../tokens';
@@ -28,3 +29,9 @@ export const configProvider = {
     }
 
 };
+
+@Module({
+    providers: [configProvider],
+    exports: [configProvider],
+  })
+export class ConfigModule {}
