@@ -31,6 +31,10 @@ model User {
 
   pattern     UserPattern?
   userTypeScore UserTypeScore?
+
+  roommateId     Int?             
+  roommate       User?            @relation("RoommateRelation", fields: [roommateId], references: [id])
+  roommates      User[]           @relation("RoommateRelation")
   @@map("users")
 }
 

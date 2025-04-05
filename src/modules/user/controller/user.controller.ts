@@ -19,7 +19,7 @@ export class UserController {
     return user;
   }
 
-  @Post('/sign-up')
+  @Post('/sign-up') 
   @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
   public async signUp(@Body() signUpDto: SignUpDto) {
     return this.userService.signUp(signUpDto);
