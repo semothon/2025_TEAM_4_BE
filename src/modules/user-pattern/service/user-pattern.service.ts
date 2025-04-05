@@ -7,11 +7,25 @@ import { UserPattern, Prisma } from '@prisma/client';
 export class UserPatternService {
   public constructor(private readonly prismaService: PrismaService) {}
 
-  public async createUserPattern(dto: CreateUserPatternDto): Promise<UserPattern> {
+  async createUserPattern(dto: CreateUserPatternDto): Promise<UserPattern> {
+    const existing = await this.prismaService.userPattern.findUnique({
+      where: { userId: dto.userId },
+    });
+  
+    if (existing) {
+      return this.prismaService.userPattern.update({
+        where: { userId: dto.userId },
+        data: {
+          userInfo: dto.userInfo,
+        },
+      });
+    }
+  
+    // 존재하지 않으면 create
     return this.prismaService.userPattern.create({
       data: {
         userId: dto.userId,
-        userInfo: dto.userInfo as Prisma.InputJsonValue,
+        userInfo: dto.userInfo,
       },
     });
   }
