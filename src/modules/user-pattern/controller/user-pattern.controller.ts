@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Put, UseGuards} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { AccessGuard } from '../../common/security/access.guard';
 import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
 import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-pattern.dto';
 import { UserPatternService } from '../service/user-pattern.service';
 import { UserPattern } from '@prisma/client';
+import { User } from '../../common/decorators/user.decorator';
+import { UserData } from '../../user/model/user.data';
 
 @ApiTags('UserPattern')
 @Controller('user-pattern')
@@ -19,21 +21,73 @@ export class UserPatternController {
   }
 
   @Post()
-  @ApiOperation({ summary: '사용자 패턴 정보 생성', description: '개인의 생활 패턴 정보를 등록합니다.' })
+  @ApiBearerAuth()
+  @UseGuards(AccessGuard)
+  @ApiOperation({ summary: '사용자 패턴 정보 생성', description: '인증된 사용자의 생활 패턴 정보를 등록합니다.' })
   @ApiResponse({ status: 201, description: '사용자 패턴 등록 성공', type: CreateUserPatternDto })
-  public create(@Body() createUserPatternDto: CreateUserPatternDto): Promise<UserPattern> {
-    return this.userPatternService.createUserPattern(createUserPatternDto);
+  @ApiBody({
+    description: 'userId는 인증된 사용자로부터 자동 추출되며, body에는 userInfo만 포함됩니다.',
+schema: {
+      type: 'object',
+      properties: {
+        userInfo: {
+          type: 'object',
+          example: {
+            cleanliness: 5,
+            noise: 2,
+            sharedItems: 3,
+            communication: 4,
+            sleepPattern: 1,
+            sensitivity: 2,
+            patience: 4,
+            attention: 5,
+          },
+        },
+      },
+    },
+  })
+  public create(
+    @User() user: UserData, // 인증된 유저 정보
+    @Body() createUserPatternDto: Omit<CreateUserPatternDto, 'userId'>, // userId 제외
+  ): Promise<UserPattern> {
+    return this.userPatternService.createUserPattern({
+      ...createUserPatternDto,
+      userId: user.id, // userId를 인증된 유저에서 추출
+    });
   }
 
-  @Put(':userId')
+  @Put()
   @UseGuards(AccessGuard)
   @ApiOperation({ summary: '사용자 패턴 정보 수정', description: '사용자의 패턴 정보를 수정합니다.' })
-  @ApiParam({ name: 'userId', type: Number })
   @ApiResponse({ status: 200, description: '패턴 정보 수정 완료', type: UpdateUserPatternDto })
+  @ApiBody({
+    description: 'userId는 인증된 사용자로부터 자동 추출되며, body에는 userInfo만 포함됩니다.',
+schema: {
+      type: 'object',
+      properties: {
+        userInfo: {
+          type: 'object',
+          example: {
+            cleanliness: 5,
+            noise: 2,
+            sharedItems: 3,
+            communication: 4,
+            sleepPattern: 1,
+            sensitivity: 2,
+            patience: 4,
+            attention: 5,
+          },
+        },
+      },
+    },
+  })
   public update(
-    @Param('userId') userId: number,
-    @Body() updateUserPatternDto: UpdateUserPatternDto,
+    @User() user: UserData, // 인증된 유저 정보
+    @Body() updateUserPatternDto: Omit<UpdateUserPatternDto, 'userId'>, // userId 제외
   ): Promise<UserPattern> {
-    return this.userPatternService.updateUserPattern(userId, updateUserPatternDto);
+    return this.userPatternService.updateUserPattern({
+      ...updateUserPatternDto,
+      userId: user.id,
+    });
   }
 }

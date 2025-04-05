@@ -3,7 +3,6 @@ import { Prisma } from '@prisma/client';
 import { IsInt } from 'class-validator';
 
 export class CreateUserPatternDto {
-  @ApiProperty({ example: 1, description: '사용자 ID' })
   @IsInt()
   public userId: number;
 
