@@ -14,7 +14,7 @@ export class UserController {
 
   @Get('/my')
   @ApiBearerAuth()
-  @ApiResponse({ status: 201, description: '로그인 성공', type: String })
+  @ApiResponse({ status: 201, description: '로그인 성공', type: UserData })
   @ApiResponse({ status: 401, description: '로그인 실패' })
   @ApiOperation({ summary: '내 정보 확인', description: '사용자 정보 확인' })
   @UseGuards(AccessGuard)
