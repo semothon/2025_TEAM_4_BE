@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
-import {UserTypeScore} from '@prisma/client';
+import {UserTypeScore, Prisma} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../common';
 import { AuthService } from '../../common/security/auth/auth.service';
@@ -40,15 +40,11 @@ export class UserService {
         pv."patience",
         pv."attention",
     cube(array[
-      CAST(pv.cleanliness AS float),
-      CAST(pv.noise AS float),
-      CAST(pv."sharedItems" AS float), 
-      CAST(pv.communication AS float), 
-      CAST(pv."sleepPattern" AS float), 
-      CAST(pv.patience AS float), 
-      CAST(pv.attention AS float)
+      ${Prisma.join(
+        types.map(type => Prisma.sql`CAST(pv."${Prisma.raw(type)}" AS float)`)
+      )}
     ]) <-> cube(CAST(ARRAY[${
-      Object.keys(USER_PERSONALITY_TYPE).map((type) => targetUser.userTypeScore?.[type as keyof typeof targetUser.userTypeScore] ?? 0)
+      types.map((type) => targetUser.userTypeScore?.[type as keyof typeof targetUser.userTypeScore] ?? 0)
      }] AS float[])) as distance
       FROM "users" u
       JOIN "user_type_scores" pv ON u."id" = pv."userId"
