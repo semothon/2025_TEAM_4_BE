@@ -32,7 +32,6 @@ export class UserTypeScoreData {
         this.sharedItems = entity.sharedItems;
         this.communication = entity.communication;
         this.sleepPattern = entity.sleepPattern;
-        this.sensitivity = entity.sensitivity;
         this.patience = entity.patience;
         this.attention = entity.attention;
     }

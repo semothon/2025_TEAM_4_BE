@@ -65,12 +65,12 @@ model UserTypeScore {
   userId        Int     @unique
   user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   cleanliness     Float    @default(0.0)
-  noise     Float    @default(0.0)
+  noise           Float    @default(0.0)
   sharedItems     Float    @default(0.0)
   communication     Float    @default(0.0)
   sleepPattern     Float    @default(0.0)
-  patience     Float    @default(0.0)
-  attention     Float    @default(0.0)
+  patience         Float    @default(0.0)
+  attention       Float    @default(0.0)
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

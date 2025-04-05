@@ -24,15 +24,7 @@ export class TestUserTypeScoreDto {
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-<<<<<<< HEAD
-  patience: number;
-=======
-  public sensitivity: number;
-
-  @ApiProperty({ minimum: 0, maximum: 15 })
-  @IsInt() @Min(0) @Max(15)
   public patience: number;
->>>>>>> 963f6a484efa8f350c5e6c40d45fa14ce4917462
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
