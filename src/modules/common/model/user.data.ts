@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { IsEmail, IsNotEmpty, IsString, IsDate } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString} from 'class-validator';
 
 export class UserData {
   @ApiProperty({ example: 'user@example.com', description: '사용자 이메일' })
@@ -13,10 +13,10 @@ export class UserData {
   @IsNotEmpty()
   public name: string;
 
-  @ApiProperty({ example: '2001-02-01T00:00:00.000Z', description: '생년월일' })
-  @IsDate()
+  @ApiProperty({ example: '2001-02-01', description: '생년월일' })
+  @IsString()
   @IsNotEmpty()
-  public birthdate: Date;
+  public birthdate: string;
 
   @ApiProperty({ example: '남성', description: '성별' })
   @IsString()

@@ -18,22 +18,14 @@ export class UserController {
   @ApiResponse({ status: 401, description: '로그인 실패' })
   @ApiOperation({ summary: '내 정보 확인', description: '사용자 정보 확인' })
   @UseGuards(AccessGuard)
-<<<<<<< HEAD
   public getMyInfo(@User() user: UserData): UserData{
-=======
-  public getMyInfo(@User() user: UserData): UserData {
->>>>>>> e1d30d2a1c104bc034a919ca77ae66b324c99484
     return user;
   }
 
   @Post('/sign-up')
   @ApiResponse({ status: 201, description: '회원가입 성공', type: UserData })
   @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
-<<<<<<< HEAD
   public async signUp(@Body() signUpDto: SignUpDto): Promise<UserData>{
-=======
-  public async signUp(@Body() signUpDto: SignUpDto): Promise<UserData> {
->>>>>>> e1d30d2a1c104bc034a919ca77ae66b324c99484
     return this.userService.signUp(signUpDto);
   }
 
@@ -52,22 +44,13 @@ export class UserController {
   }
 
   @Get('/:email')
-<<<<<<< HEAD
-  @ApiOperation({summary : '내 정보 확인', description: '사용자 정보 확인'})
-  public async getUserByEmail(@Param('email') email: string): Promise<Omit<UserData, 'password'>>{
-=======
   @ApiOperation({summary : '(구) 내 정보 확인', description: '사용자 정보 확인 (미로그인 상태)'})
   public async getUserByEmail(@Param('email') email: string): Promise<UserData> {
->>>>>>> e1d30d2a1c104bc034a919ca77ae66b324c99484
     return this.userService.getUserByEmail(email);
   }
 
   @Put('/:email')
-<<<<<<< HEAD
   public async updateUser(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto): Promise<Omit<UserData, 'password'>>{
-=======
-  public async updateUser(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto): Promise<UserData> {
->>>>>>> e1d30d2a1c104bc034a919ca77ae66b324c99484
     return this.userService.updateUserByEmail(email, updateUserDto);
   }
 }

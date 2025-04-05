@@ -24,7 +24,6 @@ export class UserService {
     return new UserData(newUser);
   }
   
-  
 
   public async signIn(signInDto: SignInDto): Promise<string> {
     const { email, password } = signInDto;

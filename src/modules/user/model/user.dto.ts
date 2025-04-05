@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, IsDate } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString} from 'class-validator';
 
 export class SignUpDto {
   @ApiProperty({ example: 'user@example.com', description: '사용자 이메일' })
@@ -18,9 +18,9 @@ export class SignUpDto {
   name: string;
 
   @ApiProperty({ example: '2001-02-01T00:00:00.000Z', description: '생년월일' })
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  birthdate: Date;
+  birthdate: string;
 
   @ApiProperty({ example: '남성', description: '성별' })
   @IsString()
@@ -65,7 +65,7 @@ export class UpdateUserDto {
   name: string;
 
   @ApiProperty()
-  birthdate: Date;
+  birthdate: string;
 
   @ApiProperty()
   gender: string;
