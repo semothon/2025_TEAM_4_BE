@@ -8,11 +8,6 @@ export class UserData {
   @IsNotEmpty()
   public email: string;
 
-  @ApiProperty({ example: 'password123', description: '비밀번호' })
-  @IsString()
-  @IsNotEmpty()
-  public password: string;
-
   @ApiProperty({ example: '홍길동', description: '이름' })
   @IsString()
   @IsNotEmpty()
@@ -50,7 +45,6 @@ export class UserData {
 
   public constructor(entity: User) {
     this.email = entity.email;
-    this.password = entity.password;
     this.name = entity.name;
     this.birthdate = entity.birthdate;
     this.country = entity.country;
