@@ -1,17 +1,17 @@
 import { Body, Controller, Get, Post, Put, UseGuards} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { UserPattern } from '@prisma/client';
+import { User } from '../../common/decorators/user.decorator';
 import { AccessGuard } from '../../common/security/access.guard';
+import { UserData } from '../../user/model/user.data';
 import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
 import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-pattern.dto';
 import { UserPatternService } from '../service/user-pattern.service';
-import { UserPattern } from '@prisma/client';
-import { User } from '../../common/decorators/user.decorator';
-import { UserData } from '../../user/model/user.data';
 
 @ApiTags('UserPattern')
 @Controller('user-pattern')
 export class UserPatternController {
-  constructor(private readonly userPatternService: UserPatternService) {}
+  public constructor(private readonly userPatternService: UserPatternService) {}
 
   @Get('personality-types')
   @ApiResponse({ status: 200, description: '사용자 성격 분류 유형 리스트 반환' })
@@ -46,7 +46,7 @@ schema: {
       },
     },
   })
-  public create(
+  public async create(
     @User() user: UserData, // 인증된 유저 정보
     @Body() createUserPatternDto: Omit<CreateUserPatternDto, 'userId'>, // userId 제외
   ): Promise<UserPattern> {

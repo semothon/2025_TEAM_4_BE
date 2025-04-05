@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { User } from '../../common/decorators/user.decorator';
 import { AccessGuard } from '../../common/security/access.guard';
@@ -22,6 +22,13 @@ export class UserController {
   @UseGuards(AccessGuard)
   public getMyInfo(@User() user: UserData): UserData{
     return user;
+  }
+
+  @Get('/with-score')
+  @ApiResponse({ status: 200, description: '사용자 정보 반환 성공', type: UserWithScoreData })
+  @ApiOperation({ summary: '추천된 사용자 정보 확인', description: '추천된 사용자 정보 확인' })
+  public async getMyInfoWithScore(@Query('userId', ParseIntPipe) userId: number): Promise<UserWithScoreData> {
+    return this.userService.getUserWithScore(userId);
   }
 
   @Get('/similar')
