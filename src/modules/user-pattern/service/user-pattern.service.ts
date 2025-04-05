@@ -4,9 +4,9 @@ import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-patter
 
 @Injectable()
 export class UserPatternService {
-    constructor(private readonly prismaService: PrismaService) {}
+    public constructor(private readonly prismaService: PrismaService) {}
 
-    async createUserPattern(dto: CreateUserPatternDto){
+    public async createUserPattern(dto: CreateUserPatternDto) {
         const {
             userId,
       sleepTime,
@@ -20,7 +20,7 @@ export class UserPatternService {
       preferredTemperature,
       personality,
         } = dto;
-        return await this.prismaService.userPattern.create({
+        return this.prismaService.userPattern.create({
             data: {
                 sleepTime,
                 wakeTime,
@@ -36,18 +36,18 @@ export class UserPatternService {
                   connect: { id: userId },
                 },
               },
-        })
+        });
     }
 
-    async updateUserPattern(userId: number, dto: UpdateUserPatternDto){
+    public async updateUserPattern(userId: number, dto: UpdateUserPatternDto) {
       const existing = await this.prismaService.userPattern.findUnique({
         where: {userId : Number(userId)}
-      })
+      });
       if (!existing) throw new NotFoundException('userID에 맞는 유저 패턴이 없습니다.');
 
       return this.prismaService.userPattern.update({
         where: {userId : Number(userId)},
         data : dto,
-      })
+      });
     }
 }
