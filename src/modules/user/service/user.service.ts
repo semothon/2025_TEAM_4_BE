@@ -103,7 +103,46 @@ export class UserService {
         password: hashedPassword,
       },
     });
-
+    await this.prismaService.userPattern.create({
+      
+      data: {
+        userId: newUser.id, // 사용자의 ID를 포함
+        userInfo: {
+          dormitory_period: "semester",
+          sleep_time: "00:00",
+          wakeup_time: "00:00",
+          sleep_regularity: "regular",
+          sleeping_habit: ["sleepwalking"],
+          shower_time: "morning",
+          shower_duration: "3",
+          temperature_sensitivity: {
+            cold: "3",
+            heat: "2"
+          },
+          activity_level: "homebody",
+          home_visit_frequency: "1/1주",
+          drinking: {
+            frequency: "2",
+            note: "never"
+          },
+          smoking: {
+            status: "yes",
+            frequency: "regular"
+          },
+          eating: {
+            indoor: "possible",
+            night_snack: "everyday"
+          },
+          fridge_usage: "yes",
+          mbti: {
+            ei: "E",
+            ns: "N",
+            tf: "T",
+            pj: "P"
+          }
+        }
+      }
+    });
     return new UserData(newUser);
   }
 
