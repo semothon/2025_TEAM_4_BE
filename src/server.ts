@@ -68,6 +68,13 @@ async function bootstrap(): Promise<void> {
     const logInterceptor = app.select(CommonModule).get(LogInterceptor);
     app.useGlobalInterceptors(logInterceptor);
 
+    app.enableCors({
+        origin: process.env.CORS_ORIGIN || '*',
+        methods: process.env.CORS_METHODS || 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        allowedHeaders: process.env.CORS_ALLOW_HEADERS || 'Content-Type, Accept',
+        exposedHeaders: process.env.CORS_EXPOSE_HEADERS || 'Content-Type, Accept',
+        credentials: true,
+    });
     await app.listen(process.env.API_PORT || API_DEFAULT_PORT);
 }
 
