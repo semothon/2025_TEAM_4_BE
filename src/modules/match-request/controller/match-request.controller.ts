@@ -1,10 +1,13 @@
-import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { MatchRequestService } from '../service/match-request.service';
 import { CreateMatchRequestDto, RespondMatchRequestDto } from '../dto/match-request.dto';
 import { MatchRequest } from '@prisma/client';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AccessGuard } from '../../common/security/access.guard';
+import { UserData } from '../../user/model/user.data';
+import { User } from '../../common/decorators/user.decorator';
 
-@ApiTags('MatchRequest') // Swagger 태그
+@ApiTags('MatchRequest')
 @Controller('match-request')
 export class MatchRequestController {
   constructor(
@@ -14,11 +17,11 @@ export class MatchRequestController {
   @Post()
   @ApiOperation({ summary: '룸메이트 매칭 요청 생성' })
   @ApiBody({ type: CreateMatchRequestDto })
-  @ApiResponse({status: 201, description: '매칭 요청이 성공적으로 생성됨',
-    type: CreateMatchRequestDto,
-  })
-    createMatchRequest(@Body() dto: CreateMatchRequestDto): Promise<CreateMatchRequestDto> {
-    return this.matchRequestService.createRequest(dto);
+  @ApiResponse({status: 201, description: '매칭 요청이 성공적으로 생성됨',type: CreateMatchRequestDto,})
+  @UseGuards(AccessGuard)
+  public createMatchRequest(@User() user: UserData, @Body() createMatchRequestDto: CreateMatchRequestDto,): Promise<CreateMatchRequestDto> {
+    const { receiverId } = createMatchRequestDto;
+    return this.matchRequestService.createRequest(user.id, receiverId);
   }
 
   @Patch('/respond')
