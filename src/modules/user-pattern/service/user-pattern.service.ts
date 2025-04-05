@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../common';
 import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-pattern.dto';
+import { UserPattern } from '@prisma/client';
 
 @Injectable()
 export class UserPatternService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async createUserPattern(dto: CreateUserPatternDto){
+    async createUserPattern(dto: CreateUserPatternDto): Promise<UserPattern>{
         const {
             userId,
       sleepTime,
@@ -39,7 +40,7 @@ export class UserPatternService {
         })
     }
 
-    async updateUserPattern(userId: number, dto: UpdateUserPatternDto){
+    async updateUserPattern(userId: number, dto: UpdateUserPatternDto): Promise<UserPattern>{
       const existing = await this.prismaService.userPattern.findUnique({
         where: {userId : Number(userId)}
       })

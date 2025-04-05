@@ -15,13 +15,13 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '내 정보 확인', description: '사용자 정보 확인' })
   @UseGuards(AccessGuard)
-  public getMyInfo(@User() user: UserData) {
+  public getMyInfo(@User() user: UserData): UserData{
     return user;
   }
 
   @Post('/sign-up') 
   @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
-  public async signUp(@Body() signUpDto: SignUpDto) {
+  public async signUp(@Body() signUpDto: SignUpDto): Promise<UserData>{
     return this.userService.signUp(signUpDto);
   }
 
@@ -33,12 +33,12 @@ export class UserController {
 
   @Get('/:email')
   @ApiOperation({summary : '내 정보 확인', description: '사용자 정보 확인'})
-  public async getUserByEmail(@Param('email') email: string){
+  public async getUserByEmail(@Param('email') email: string): Promise<Omit<UserData, 'password'>>{
     return this.userService.getUserByEmail(email);
   }
 
   @Put('/:email')
-  public async updateUser(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto){
+  public async updateUser(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto): Promise<Omit<UserData, 'password'>>{
     return this.userService.updateUserByEmail(email, updateUserDto);
   }
 }

@@ -2,6 +2,7 @@ import { Body, Controller, Param, Post, Put} from '@nestjs/common';
 import { UserPatternService } from '../service/user-pattern.service';
 import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-pattern.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { UserPattern } from '@prisma/client';
 
 @ApiTags('User Pattern')
 @Controller('user-pattern')
@@ -10,13 +11,13 @@ export class UserPatternController {
 
   @Post()
   @ApiOperation({ summary: '사용자 패턴 정보 생성', description: '개인의 생활 패턴 정보를 등록합니다.' })
-  create(@Body() createUserPatternDto: CreateUserPatternDto) {
+  create(@Body() createUserPatternDto: CreateUserPatternDto) : Promise<UserPattern>{
     return this.userPatternService.createUserPattern(createUserPatternDto);
   }
 
   @Put(':userId')
   @ApiOperation({ summary: '사용자 패턴 정보 수정', description: '사용자의 패턴 정보를 수정합니다.' })
-  update(@Param('userId') userId: number, @Body()updateUserPatternDto : UpdateUserPatternDto){
+  update(@Param('userId') userId: number, @Body()updateUserPatternDto : UpdateUserPatternDto): Promise<UserPattern>{
     return this.userPatternService.updateUserPattern(userId, updateUserPatternDto);
   }
 }
