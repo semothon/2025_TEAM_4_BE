@@ -1,4 +1,4 @@
-import { Injectable} from '@nestjs/common';
+import { BadRequestException, Injectable} from '@nestjs/common';
 import { PrismaService } from '../../common';
 import {  CreateUserPatternDto, UpdateUserPatternDto,  } from '../model/user-pattern.dto';
 import { UserPattern } from '@prisma/client';
@@ -30,16 +30,32 @@ export class UserPatternService {
   }
 
   async updateUserPattern(dto: UpdateUserPatternDto): Promise<UserPattern> {
+    if (dto.userId === undefined) {
+      throw new BadRequestException('userId는 필수 항목입니다.');
+    }
+  
+    if (!dto.userInfo || Object.keys(dto.userInfo).length === 0) {
+      throw new BadRequestException('userInfo는 필수 항목입니다.');
+    }
+  
     const existing = await this.prismaService.userPattern.findUnique({
       where: { userId: dto.userId },
     });
-    
-    return this.prismaService.userPattern.update({
+  
+    if (existing) {
+      return this.prismaService.userPattern.update({
         where: { userId: dto.userId },
         data: {
           userInfo: dto.userInfo,
         },
       });
     }
-
+  
+    return this.prismaService.userPattern.create({
+      data: {
+        userId: dto.userId,
+        userInfo: dto.userInfo,
+      },
+    });
+  }
 }
