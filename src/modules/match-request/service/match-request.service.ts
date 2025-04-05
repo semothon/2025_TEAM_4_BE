@@ -1,37 +1,38 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../common';
-import { CreateMatchRequestDto, RespondMatchRequestDto } from '../dto/match-request.dto';
+import { RespondMatchRequestDto } from '../dto/match-request.dto';
+import { MatchRequest } from '@prisma/client';
 
 @Injectable()
 export class MatchRequestService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createRequest(dto: CreateMatchRequestDto) :Promise<CreateMatchRequestDto> {
-    const { senderId, receiverId } = dto;
-
+  async createRequest(senderId: number, receiverId: number): Promise<MatchRequest> {
     if (senderId === receiverId) {
       throw new BadRequestException("자기 자신에게 매칭 요청을 보낼 수 없습니다.");
     }
-
+  
     const existing = await this.prisma.matchRequest.findFirst({
       where: {
         senderId,
         receiverId,
-        status: 'PENDING'
-      }
+        status: 'PENDING',
+      },
     });
-
+  
     if (existing) {
       throw new BadRequestException("이미 요청을 보낸 상태입니다.");
     }
-
+  
     return this.prisma.matchRequest.create({
       data: {
         senderId,
-        receiverId
-      }
+        receiverId,
+        status: 'PENDING',
+      },
     });
   }
+  
 
   async respondRequest(dto: RespondMatchRequestDto){
     const { requestId, accepted } = dto;
