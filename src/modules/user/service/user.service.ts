@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
-import {User} from '@prisma/client';
+import {UserTypeScore} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../common';
 import { AuthService } from '../../common/security/auth/auth.service';
+import { UserTypeScoreData } from '../../user-pattern/model/user-type-score.data';
 import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
-import {IUserTypeScore, UserWithScoreData} from '../model/user-with-score.data';
+import {UserWithScoreData} from '../model/user-with-score.data';
 import { UserData } from '../model/user.data';
 import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 
@@ -20,8 +21,8 @@ export class UserService {
     if (!targetUser || !targetUser?.userTypeScore) {
       throw new Error('사용자를 찾을 수 없습니다.');
     }
-    const similarUsers: Array<User & IUserTypeScore> = await this.prismaService.$queryRaw`
-      SELECT 
+    const similarUsers: (UserData & Partial<UserTypeScoreData>)[] = await this.prismaService.$queryRaw`
+      SELECT
         u.id, 
         u.name,
         u.email,
@@ -55,7 +56,29 @@ export class UserService {
       ORDER BY distance ASC
       LIMIT ${limit}
     `;
-    return similarUsers.map(user => new UserWithScoreData(user));
+    const newUsers: UserWithScoreData[] = similarUsers.map((user) => {
+      const userTypeScore = new UserTypeScoreData({
+        cleanliness: user.cleanliness ?? 0,
+        noise: user.noise ?? 0,
+        sharedItems: user.sharedItems ?? 0,
+        communication: user.communication ?? 0,
+        sleepPattern: user.sleepPattern ?? 0,
+        patience: user.patience ?? 0,
+        attention: user.attention ?? 0,
+      } as UserTypeScore);
+      delete user.attention;
+      delete user.patience;
+      delete user.sleepPattern;
+      delete user.communication;
+      delete user.sharedItems;
+      delete user.noise;
+      delete user.cleanliness;
+      return {
+        ...user,
+        userTypeScore,
+      } as UserWithScoreData;
+    });
+    return newUsers;
   }
 
   public async signUp(signUpDto: SignUpDto): Promise<UserData> {
