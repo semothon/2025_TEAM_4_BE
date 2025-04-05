@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
-import { User } from '@prisma/client';
+import {User} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../common';
 import { AuthService } from '../../common/security/auth/auth.service';
 import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
-import { UserWithScore } from '../model/user-with-score.data';
+import {IUserTypeScore, UserWithScoreData} from '../model/user-with-score.data';
 import { UserData } from '../model/user.data';
 import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 
@@ -12,7 +12,7 @@ import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 export class UserService {
   public constructor(private readonly prismaService: PrismaService, private readonly authService: AuthService) {}
 
-  public async findSimilarUsers(userId: number, limit: number): Promise<UserWithScore[]> {
+  public async findSimilarUsers(userId: number, types: (keyof typeof USER_PERSONALITY_TYPE)[], limit: number): Promise<UserWithScoreData[]> {
     const targetUser = await this.prismaService.user.findUnique({
       where: { id: userId },
       include: { userTypeScore: true }
@@ -20,17 +20,17 @@ export class UserService {
     if (!targetUser || !targetUser?.userTypeScore) {
       throw new Error('사용자를 찾을 수 없습니다.');
     }
-    // Raw SQL 쿼리로 유클리드 거리 계산
-    const similarUsers: Array<User> = await this.prismaService.$queryRaw`
+    const similarUsers: Array<User & IUserTypeScore> = await this.prismaService.$queryRaw`
       SELECT 
         u.id, 
         u.name,
         cube(array[
-          pv.type1, pv.type2, pv.type3, pv.type4,
-          pv.type5, pv.type6, pv.type7, pv.type8
+          ${types.map(
+            type => `pv.${type}`
+          ).join(', ')}
         ]) <-> cube(array[
           ${
-            Object.keys(USER_PERSONALITY_TYPE).map(
+            types.map(
               type => targetUser.userTypeScore?.[type as keyof typeof targetUser.userTypeScore] ?? 0
             ).join(', ')
           }
@@ -41,7 +41,7 @@ export class UserService {
       ORDER BY distance ASC
       LIMIT ${limit}
     `;
-    return similarUsers.map(user => new UserWithScore(user));
+    return similarUsers.map(user => new UserWithScoreData(user));
   }
 
   public async signUp(signUpDto: SignUpDto): Promise<UserData> {

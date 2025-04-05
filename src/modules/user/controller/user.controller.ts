@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { User } from '../../common/decorators/user.decorator';
 import { AccessGuard } from '../../common/security/access.guard';
+import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
 import { SignInResponse } from '../model/response/signin-response';
-import { UserWithScore } from '../model/user-with-score.data';
+import { UserWithScoreData } from '../model/user-with-score.data';
 import { UserData } from '../model/user.data';
 import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 import { UserService } from '../service/user.service';
@@ -24,8 +25,18 @@ export class UserController {
   }
 
   @Get('/similar')
-  public async findSimilarUsers(@User() user: UserData): Promise<UserWithScore[]> {
-    return this.userService.findSimilarUsers(user.id, 5);
+  @ApiBearerAuth()
+  @UseGuards(AccessGuard)
+  @ApiQuery({
+    name: 'types',
+    required: true,
+    description: '유사 사용자 조회를 위한 성격 유형들 (콤마로 구분)', type: String, example: 'cleanliness,noise,sharedItems,communication,sleepPattern,patience,attention'
+  })
+  @ApiResponse({ status: 200, description: '유사 사용자 조회 성공', type: UserWithScoreData, isArray: true })
+  @ApiOperation({ summary: '유사 사용자 조회', description: '나와 유사한 사용자들을 조회합니다.' })
+  public async findSimilarUsers(@User() user: UserData, @Query('types') types: string): Promise<UserWithScoreData[]> {
+    const typesArray = types.split(',').map(type => type.trim()) as (keyof typeof USER_PERSONALITY_TYPE)[];
+    return this.userService.findSimilarUsers(user.id, typesArray, 5);
   }
 
   @Post('/sign-up')
