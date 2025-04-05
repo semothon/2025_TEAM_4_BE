@@ -71,8 +71,8 @@ async function bootstrap(): Promise<void> {
     app.enableCors({
         origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
         methods: process.env.CORS_METHODS || 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: process.env.CORS_ALLOW_HEADERS || 'Content-Type, Accept',
-        exposedHeaders: process.env.CORS_EXPOSE_HEADERS || 'Content-Type, Accept',
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
         credentials: true,
     });
     await app.listen(process.env.API_PORT || API_DEFAULT_PORT);
