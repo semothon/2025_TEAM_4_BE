@@ -77,6 +77,21 @@ export class UserService {
     return newUsers;
   }
 
+  public async getUserWithScore(userId: number): Promise<UserWithScoreData> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      include: { userTypeScore: true }
+    });
+    if (!user || !user?.userTypeScore) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+    const userTypeScore = new UserTypeScoreData(user.userTypeScore);
+    return {
+      ...new UserData(user),
+      userTypeScore,
+    } as UserWithScoreData;
+  }
+
   public async signUp(signUpDto: SignUpDto): Promise<UserData> {
     const { password, ...rest } = signUpDto;
 
