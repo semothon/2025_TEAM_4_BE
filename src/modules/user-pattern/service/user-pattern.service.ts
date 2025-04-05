@@ -30,9 +30,6 @@ export class UserPatternService {
   }
 
   async updateUserPattern(dto: UpdateUserPatternDto): Promise<UserPattern> {
-    const existing = await this.prismaService.userPattern.findUnique({
-      where: { userId: dto.userId },
-    });
     
     return this.prismaService.userPattern.update({
         where: { userId: dto.userId },

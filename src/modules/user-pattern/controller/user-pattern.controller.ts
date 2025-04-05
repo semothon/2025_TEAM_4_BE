@@ -5,6 +5,7 @@ import { User } from '../../common/decorators/user.decorator';
 import { AccessGuard } from '../../common/security/access.guard';
 import { UserData } from '../../user/model/user.data';
 import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
+import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-pattern.dto';
 import { UserPatternService } from '../service/user-pattern.service';
 
 @ApiTags('UserPattern')
