@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Put, UseGuards} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '../../common/decorators/user.decorator';
-import { UserData } from '../../common/model/user.data';
+import { UserData } from '../../user/model/user.data';
 import { AccessGuard } from '../../common/security/access.guard';
 import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
 import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-pattern.dto';

@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { User } from '../../common/decorators/user.decorator';
-import { UserData } from '../../common/model/user.data';
 import { AccessGuard } from '../../common/security/access.guard';
 import { SignInResponse } from '../model/response/signin-response';
+import { UserWithScore } from '../model/user-with-score.data';
+import { UserData } from '../model/user.data';
 import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 import { UserService } from '../service/user.service';
 
@@ -20,6 +21,11 @@ export class UserController {
   @UseGuards(AccessGuard)
   public getMyInfo(@User() user: UserData): UserData {
     return user;
+  }
+
+  @Get('/similar')
+  public async findSimilarUsers(@User() user: UserData): Promise<UserWithScore[]> {
+    return this.userService.findSimilarUsers(user.id, 5);
   }
 
   @Post('/sign-up')
