@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Put, UseGuards} from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Put, UseGuards} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '../../common/decorators/user.decorator';
 import { UserData } from '../../common/model/user.data';
 import { AccessGuard } from '../../common/security/access.guard';
+import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
 import { CreateUserPatternDto, UpdateUserPatternDto } from '../model/user-pattern.dto';
 import { UserPatternService } from '../service/user-pattern.service';
 
@@ -10,6 +11,13 @@ import { UserPatternService } from '../service/user-pattern.service';
 @Controller('user-pattern')
 export class UserPatternController {
   public constructor(private readonly userPatternService: UserPatternService) {}
+
+  @Get('personality-types')
+  @ApiResponse({ status: 200, example: Object.keys(USER_PERSONALITY_TYPE) })
+  @ApiOperation({ summary: '사용자 성격 분류 유형 리스트 조회' })
+  public getUserPersonalityTypes(): Array<string> {
+    return Object.keys(USER_PERSONALITY_TYPE);
+  }
 
   @Post()
   @ApiOperation({ summary: '사용자 패턴 정보 생성', description: '개인의 생활 패턴 정보를 등록합니다.' })

@@ -54,7 +54,7 @@ async function bootstrap(): Promise<void> {
 
     const app = await NestFactory.create<NestFastifyApplication>(
         ApplicationModule,
-        new FastifyAdapter()
+        new FastifyAdapter(),
     );
 
     // @todo Enable Helmet for better API security headers
@@ -69,7 +69,7 @@ async function bootstrap(): Promise<void> {
     app.useGlobalInterceptors(logInterceptor);
 
     app.enableCors({
-        origin: process.env.CORS_ORIGIN || '*',
+        origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
         methods: process.env.CORS_METHODS || 'GET,HEAD,PUT,PATCH,POST,DELETE',
         allowedHeaders: process.env.CORS_ALLOW_HEADERS || 'Content-Type, Accept',
         exposedHeaders: process.env.CORS_EXPOSE_HEADERS || 'Content-Type, Accept',
