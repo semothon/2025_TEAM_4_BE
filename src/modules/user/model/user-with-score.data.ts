@@ -7,6 +7,8 @@ export class UserWithScore extends UserData {
 
     public constructor(entity: User) {
         super(entity);
-        this.userTypeScore = new UserTypeScoreData(entity.userTypeScore!);
+        // if (entity?.userTypeScore) {
+        //     this.userTypeScore = new UserTypeScoreData(entity.userTypeScore);
+        // }
     }
 }
