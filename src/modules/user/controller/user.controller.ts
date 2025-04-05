@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { User } from '../../common/decorators/user.decorator';
-import { UserData } from '../../common/model/user.data';
 import { AccessGuard } from '../../common/security/access.guard';
 import { SignInResponse } from '../model/response/signin-response';
+import { UserWithScore } from '../model/user-with-score.data';
+import { UserData } from '../model/user.data';
 import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 import { UserService } from '../service/user.service';
 
@@ -14,12 +15,17 @@ export class UserController {
 
   @Get('/my')
   @ApiBearerAuth()
-  @ApiResponse({ status: 201, description: '로그인 성공', type: String })
+  @ApiResponse({ status: 201, description: '로그인 성공', type: UserData })
   @ApiResponse({ status: 401, description: '로그인 실패' })
   @ApiOperation({ summary: '내 정보 확인', description: '사용자 정보 확인' })
   @UseGuards(AccessGuard)
   public getMyInfo(@User() user: UserData): UserData{
     return user;
+  }
+
+  @Get('/similar')
+  public async findSimilarUsers(@User() user: UserData): Promise<UserWithScore[]> {
+    return this.userService.findSimilarUsers(user.id, 5);
   }
 
   @Post('/sign-up')

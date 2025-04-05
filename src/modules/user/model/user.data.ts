@@ -1,8 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { IsEmail, IsNotEmpty, IsString} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Min, IsNumber } from 'class-validator';
 
 export class UserData {
+  @ApiProperty({ example: 'userId', description: '사용자 ID' })
+  @Min(1)
+  @IsNumber()
+  @IsNotEmpty()
+  public readonly id: number;
+
   @ApiProperty({ example: 'user@example.com', description: '사용자 이메일' })
   @IsEmail()
   @IsNotEmpty()
@@ -44,6 +50,7 @@ export class UserData {
   public studentId: string;
 
   public constructor(entity: User) {
+    this.id = entity.id;
     this.email = entity.email;
     this.name = entity.name;
     this.birthdate = entity.birthdate;
