@@ -4,47 +4,47 @@ import { ApiProperty } from '@nestjs/swagger';
 export class TestUserTypeScoreDto {
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  cleanliness: number;
+  public cleanliness: number;
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  noise: number;
+  public noise: number;
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  sharedItems: number;
+  public sharedItems: number;
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  communication: number;
+  public communication: number;
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  sleepPattern: number;
+  public sleepPattern: number;
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  sensitivity: number;
+  public sensitivity: number;
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  patience: number;
+  public patience: number;
 
   @ApiProperty({ minimum: 0, maximum: 15 })
   @IsInt() @Min(0) @Max(15)
-  attention: number;
+  public attention: number;
 
   @ApiProperty()
   @IsInt()
-  userId: number;
+  public userId: number;
 }
 
 export class SubmitUserTypeScoreDto {
     @IsInt()
-    userId: number;
+    public userId: number;
   
     @IsInt() @Min(0) @Max(15)
-    cleanliness: number;
+    public cleanliness: number;
   
     @IsInt() @Min(0) @Max(15)
     noise: number;
