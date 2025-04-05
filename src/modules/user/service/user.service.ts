@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import { User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../common';
-import { UserData } from '../model/user.data';
 import { AuthService } from '../../common/security/auth/auth.service';
 import { USER_PERSONALITY_TYPE } from '../../user-type-score/constants/user-personality-type';
-import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 import { UserWithScore } from '../model/user-with-score.data';
+import { UserData } from '../model/user.data';
+import { SignUpDto, SignInDto, UpdateUserDto } from '../model/user.dto';
 
 @Injectable()
 export class UserService {
@@ -44,26 +45,41 @@ export class UserService {
   }
 
   public async signUp(signUpDto: SignUpDto): Promise<UserData> {
+    const { password, ...rest } = signUpDto;
+
+    const hashedPassword = await bcrypt.hash(password, 10); // saltRounds = 10
+
     const newUser = await this.prismaService.user.create({
-      data: signUpDto,
+      data: {
+        ...rest,
+        password: hashedPassword,
+      },
     });
+
     return new UserData(newUser);
   }
 
-  public async signIn(signInDto: SignInDto) {
+
+  public async signIn(signInDto: SignInDto): Promise<string> {
+    const { email, password } = signInDto;
+
     const user = await this.prismaService.user.findUnique({
-      where: { email: signInDto.email, password: signInDto.password },
-      select: {
-        id: true,
-      }
+      where: { email },
     });
+
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('이메일 또는 비밀번호가 잘못되었습니다.');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('이메일 또는 비밀번호가 잘못되었습니다.');
     }
     return this.authService.createAccessToken(user.id);
-  }
+}
 
-  public async getUserByEmail(email: string): Promise<UserData> {
+
+  public async getUserByEmail(email: string): Promise<Omit<UserData, 'password'>>{
     const user = await this.prismaService.user.findUnique({where: {email}, });
 
     if (!user) throw new NotFoundException('사용자를 찾을 수 없습니다.');
@@ -71,7 +87,7 @@ export class UserService {
     return new UserData(user);
   }
 
-  public async updateUserByEmail(email: string, updateUserDto: UpdateUserDto){
+  public async updateUserByEmail(email: string, updateUserDto: UpdateUserDto) :Promise<Omit<UserData, 'password'>>{
     const user = await this.prismaService.user.findUnique({where : {email}});
 
     if (!user) throw new NotFoundException('사용자를 찾을 수 없습니다.');

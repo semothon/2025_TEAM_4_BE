@@ -21,7 +21,7 @@ model User {
   email       String @unique
   password    String
   name        String
-  birthdate   DateTime
+  birthdate   String
   gender      String
   country     String
   university  String

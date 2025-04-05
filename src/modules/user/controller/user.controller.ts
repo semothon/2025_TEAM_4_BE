@@ -19,7 +19,7 @@ export class UserController {
   @ApiResponse({ status: 401, description: '로그인 실패' })
   @ApiOperation({ summary: '내 정보 확인', description: '사용자 정보 확인' })
   @UseGuards(AccessGuard)
-  public getMyInfo(@User() user: UserData): UserData {
+  public getMyInfo(@User() user: UserData): UserData{
     return user;
   }
 
@@ -31,7 +31,7 @@ export class UserController {
   @Post('/sign-up')
   @ApiResponse({ status: 201, description: '회원가입 성공', type: UserData })
   @ApiOperation({ summary: '회원가입', description: '새로운 사용자를 등록합니다.' })
-  public async signUp(@Body() signUpDto: SignUpDto): Promise<UserData> {
+  public async signUp(@Body() signUpDto: SignUpDto): Promise<UserData>{
     return this.userService.signUp(signUpDto);
   }
 
@@ -56,7 +56,7 @@ export class UserController {
   }
 
   @Put('/:email')
-  public async updateUser(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto): Promise<UserData> {
+  public async updateUser(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto): Promise<Omit<UserData, 'password'>>{
     return this.userService.updateUserByEmail(email, updateUserDto);
   }
 }
