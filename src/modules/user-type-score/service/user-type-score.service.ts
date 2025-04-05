@@ -6,30 +6,15 @@ import { SubmitUserTypeScoreDto, TestUserTypeScoreDto } from '../model/user-type
 export class UserTypeScoreService {
     constructor(private readonly prisma: PrismaService) {}
     async createScoreFromTest(dto: TestUserTypeScoreDto) {
-        const {
-          userId,
-          cleanliness,
-          noise,
-          sharedItems,
-          communication,
-          sleepPattern,
-          patience,
-          attention,
-        } = dto;
+      const { userId, ...scoreData } = dto;
     
-        return await this.prisma.userTypeScore.create({
-          data: {
-            userId,
-            cleanliness,
-            noise,
-            sharedItems,
-            communication,
-            sleepPattern,
-            patience,
-            attention,
-          },
-        });
-      }
+      return await this.prisma.userTypeScore.upsert({
+        where: { userId },
+        update: { ...scoreData },
+        create: { userId, ...scoreData },
+      });
+    }
+    
 
       async submitOrUpdateScore(dto: SubmitUserTypeScoreDto) {
         return this.prisma.userTypeScore.upsert({
