@@ -35,6 +35,9 @@ model User {
   roommateId     Int?             
   roommate       User?            @relation("RoommateRelation", fields: [roommateId], references: [id])
   roommates      User[]           @relation("RoommateRelation")
+
+  sentRequests      MatchRequest[] @relation("SentRequests")
+  receivedRequests  MatchRequest[] @relation("ReceivedRequests")
   @@map("users")
 }
 
@@ -42,17 +45,8 @@ model UserPattern {
   id              Int      @id @default(autoincrement())
   userId          Int      @unique
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  sleepTime       String   // 'HH:mm' 형식
-  wakeTime        String   
-  isSmoker        Boolean
-  isDrinker       Boolean
-  cleaningCycle   Int      // 일 단위
-  noiseSensitivity Int     // 1~5 척도
-  allowVisitors   Boolean
-  studyHours       Int      // 시간 단위
-  preferredTemperature   Float    // 섭씨
-  personality     String   // MBTI
+  
+  userInfo         Json
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -76,4 +70,22 @@ model UserTypeScore {
   updatedAt     DateTime @updatedAt
 
   @@map("user_type_scores")
+}
+
+model MatchRequest {
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  status      MatchStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sender      User     @relation("SentRequests", fields: [senderId], references: [id])
+  receiver    User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
+}
+
+enum MatchStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
