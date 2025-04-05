@@ -24,19 +24,33 @@ export class UserService {
       SELECT 
         u.id, 
         u.name,
-        cube(array[
-          ${types.map(
-            type => `pv.${type}`
-          ).join(', ')}
-        ]) <-> cube(array[
-          ${
-            types.map(
-              type => targetUser.userTypeScore?.[type as keyof typeof targetUser.userTypeScore] ?? 0
-            ).join(', ')
-          }
-        ]) as distance
-      FROM "User" u
-      JOIN "PersonalityVector" pv ON u."personalityVectorId" = pv.id
+        u.email,
+        u.birthdate,
+        u.gender,
+        u.country,
+        u.university,
+        u.department,
+        u."studentId",
+        pv."cleanliness",
+        pv."noise",
+        pv."sharedItems",
+        pv."communication",
+        pv."sleepPattern",
+        pv."patience",
+        pv."attention",
+    cube(array[
+      CAST(pv.cleanliness AS float),
+      CAST(pv.noise AS float),
+      CAST(pv."sharedItems" AS float), 
+      CAST(pv.communication AS float), 
+      CAST(pv."sleepPattern" AS float), 
+      CAST(pv.patience AS float), 
+      CAST(pv.attention AS float)
+    ]) <-> cube(CAST(ARRAY[${
+      Object.keys(USER_PERSONALITY_TYPE).map((type) => targetUser.userTypeScore?.[type as keyof typeof targetUser.userTypeScore] ?? 0)
+     }] AS float[])) as distance
+      FROM "users" u
+      JOIN "user_type_scores" pv ON u."id" = pv."userId"
       WHERE u.id != ${userId}
       ORDER BY distance ASC
       LIMIT ${limit}
