@@ -17,17 +17,17 @@ export class MatchRequestController {
   @ApiResponse({status: 201, description: '매칭 요청이 성공적으로 생성됨',
     type: CreateMatchRequestDto,
   })
-  createMatchRequest(@Body() dto: CreateMatchRequestDto): Promise<CreateMatchRequestDto> {
+    createMatchRequest(@Body() dto: CreateMatchRequestDto): Promise<CreateMatchRequestDto> {
     return this.matchRequestService.createRequest(dto);
   }
 
-  @Patch('respond')
+  @Patch('/respond')
   @ApiOperation({ summary: '룸메이트 매칭 요청에 응답' })
   @ApiBody({ type: RespondMatchRequestDto })
   @ApiResponse({
     status: 200,
     description: '매칭 요청에 대한 응답 처리',
-    type: RespondMatchRequestDto,
+type: RespondMatchRequestDto,
   })
   respondToMatchRequest(@Body() dto: RespondMatchRequestDto,): Promise<MatchRequest> {
     return this.matchRequestService.respondRequest(dto);
