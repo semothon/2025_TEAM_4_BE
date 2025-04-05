@@ -74,7 +74,6 @@ export class MatchRoomateService {
           Math.pow(scoreA.sharedItems - scoreB.sharedItems, 2) +
           Math.pow(scoreA.communication - scoreB.communication, 2) +
           Math.pow(scoreA.sleepPattern - scoreB.sleepPattern, 2) +
-          Math.pow(scoreA.sensitivity - scoreB.sensitivity, 2) +
           Math.pow(scoreA.patience - scoreB.patience, 2) +
           Math.pow(scoreA.attention - scoreB.attention, 2)
         );

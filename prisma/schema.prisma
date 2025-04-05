@@ -71,7 +71,6 @@ model UserTypeScore {
   sharedItems   Int     // 공용물품
   communication Int     // 소통
   sleepPattern  Int     // 수면 패턴
-  sensitivity   Int     // 민감도
   patience      Int     // 인내심
   attention     Int     // 주의력
 
