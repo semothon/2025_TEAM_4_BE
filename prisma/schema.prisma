@@ -31,6 +31,10 @@ model User {
 
   pattern     UserPattern?
   userTypeScore UserTypeScore?
+
+  roommateId     Int?             
+  roommate       User?            @relation("RoommateRelation", fields: [roommateId], references: [id])
+  roommates      User[]           @relation("RoommateRelation")
   @@map("users")
 }
 
@@ -46,7 +50,7 @@ model UserPattern {
   cleaningCycle   Int      // 일 단위
   noiseSensitivity Int     // 1~5 척도
   allowVisitors   Boolean
-  studyHours       Int      // 분 단위
+  studyHours       Int      // 시간 단위
   preferredTemperature   Float    // 섭씨
   personality     String   // MBTI
 
